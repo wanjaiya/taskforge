@@ -5,14 +5,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
 
@@ -25,6 +25,10 @@ Route::middleware('auth')->group(function () {
         Route::resource('permissions', PermissionController::class);
         Route::resource('users', UserController::class);
         Route::get('users/{user}/verify', [UserController::class, 'verify'])->name('users.verify');
+    });
+
+    Route::middleware(['can:manage-company'])->group(function(){
+        Route::resource('companies', CompanyController::class);
     });
 
 });

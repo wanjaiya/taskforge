@@ -21,6 +21,9 @@ class DatabaseSeeder extends Seeder
         $permissions = [
             ['name' => 'Manage Users', 'slug' => 'manage-users', 'group' => 'users'],
             ['name' => 'Manage Workflows', 'slug' => 'manage-workflows', 'group' => 'workflows'],
+            ['name' => 'Manage Company', 'slug' => 'manage-company', 'group' => 'companies'],
+            ['name' => 'Invite Users to Company', 'slug' => 'invite-users-to-company', 'group' => 'companies'],
+            ['name' => 'Change Company user role', 'slug' => 'change-company-user-role', 'group' => 'companies'],
             ['name' => 'View Tasks', 'slug' => 'view-tasks', 'group' => 'tasks'],
             ['name' => 'Approve Tasks', 'slug' => 'approve-tasks', 'group' => 'tasks'],
         ];
@@ -28,10 +31,10 @@ class DatabaseSeeder extends Seeder
         Permission::insert($permissions);
 
         $admin = Role::create(['name' => 'Admin', 'slug' => 'admin']);
-        $staff = Role::create(['name' => 'Staff', 'slug' => 'staff']);
+        $manager = Role::create(['name' => 'Manager', 'slug' => 'manager']);
 
         $admin->permissions()->sync(Permission::pluck('id'));
-        $staff->permissions()->sync(Permission::whereIn('slug', ['view-tasks'])->pluck('id')
+        $manager->permissions()->sync(Permission::whereIn('slug', ['manage-company','invite-users-to-company', 'change-company-user-role'])->pluck('id')
         );
 
        $user =  User::factory()->create([

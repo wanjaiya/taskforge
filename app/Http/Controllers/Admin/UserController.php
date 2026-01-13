@@ -7,7 +7,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Role;
 use App\Models\AccountVerification;
-use Mail;
+use Illuminate\Support\Facades\Mail;
+
 
 class UserController extends Controller
 {
@@ -23,8 +24,7 @@ class UserController extends Controller
             $user->role_names = $user->roles->pluck('name')->toArray();
         }
 
-        
-
+    
         return view('admin.users.index', compact('users', 'roles'));
     }
 
@@ -33,6 +33,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
 
+     
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -52,16 +53,16 @@ class UserController extends Controller
 
         $token = AccountVerification::createTokenForUser($user->id);
 
-
+   
          // Send verification email
-        Mail::send('emails.account-verification', ['name' => $user->name, 'token' => $token->token], function ($message) use ($user) {
+        Mail::send('emails.account-verification', ['name' => $user->name, 'token' => $token->token, 'url'=> 'verify.account'], function ($message) use ($user) {
             $message->from('info@jalebi.com', 'The '. config('app.name').' Team');
             $message->to($user->email, $user->name);
             $message->subject('Verify Your '. config('app.name').' Account');
         });
       
 
-        return redirect()->route('users.index')->with('status', 'User created successfully!');
+        return redirect()->route('users.index')->with('status', 'User created successfully. Email sent to user for verification!');
     }
 
     public function verify(Request $request, User $user)
@@ -100,7 +101,7 @@ class UserController extends Controller
     {
         
 
-        $user->update(['deleted_at' => now()]);
+        $user->delete();
 
          
         return redirect()->route('users.index')->with('status', 'User deleted successfully!');

@@ -22,26 +22,38 @@ class AuthServiceProvider extends ServiceProvider
     {
         //
         Gate::before(function ($user, $ability) {
-            if ( $user->hasRole('admin')) {
+            if ($user->hasRole('admin')) {
 
                 return true;
             }
         });
 
-        Gate::define('manage-users', fn ($user) =>
-        $user->hasPermission('manage-users')
+        Gate::define(
+            'manage-users',
+            fn($user) =>
+            $user->hasPermission('manage-users')
         );
 
-        Gate::define('manage-workflows', fn ($user) =>
-        $user->hasPermission('manage-workflows')
+        Gate::define(
+            'manage-workflows',
+            fn($user) =>
+            $user->hasPermission('manage-workflows')
         );
 
-        Gate::define('view-tasks', fn ($user) =>
-        $user->hasPermission('view-tasks')
+        Gate::define('manage-company', fn($user) =>
+          $user->hasPermission('manage-company')
         );
 
-        Gate::define('approve-tasks', fn ($user) =>
-        $user->hasPermission('approve-tasks')
+        Gate::define(
+            'view-tasks',
+            fn($user) =>
+            $user->hasPermission('view-tasks')
+        );
+
+        Gate::define(
+            'approve-tasks',
+            fn($user) =>
+            $user->hasPermission('approve-tasks')
         );
     }
 }

@@ -48,18 +48,43 @@ class User extends Authenticatable
         ];
     }
 
-    public function roles() : BelongsToMany{
+    public function roles(): BelongsToMany
+    {
         return $this->belongsToMany(Role::class);
     }
 
-    public function hasRole(string $role){
+    public function companies()
+    {
+        return $this->hasMany(Company::class, 'owner_id', 'id');
+    }
+
+    public function hasRole(string $role)
+    {
         return $this->roles()->where('slug', $role)->exists();
     }
 
-    public function hasPermissions(string $permission){
-        return $this->roles()->whereHas('permissions', function ($query) use ($permission){
+    public function hasPermission(string $permission)
+    {
+        return $this->roles()->whereHas('permissions', function ($query) use ($permission) {
             $query->where('slug', $permission);
         })->exists();
     }
 
+
+    public function hasCompany()
+    {
+        if ($this->hasRole('manager') && $this->hasPermission('manage-company')) {
+
+            if ($this->companies()->exists()) {
+
+                return true;
+
+            } else {
+                return false;
+            }
+            
+        }else{
+            return 'role issue';
+        }
+    }
 }
