@@ -1,11 +1,14 @@
 <x-guest-layout>
-    <!-- Session Status -->
+    <div class="w-full sm:w-[500px] mt-6  bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg">
+    
+      
+
+           <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
-
-        <!-- Email Address -->
+        <form class="w-full py-6 px-6 sm:px-14 mx-auto" method="POST" action="{{ route('login') }}">
+            @csrf
+               <!-- Email Address -->
         <div>
             <x-input-label for="email" :value="__('Email')" />
             <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
@@ -43,5 +46,8 @@
                 {{ __('Log in') }}
             </x-primary-button>
         </div>
-    </form>
+        </form>
+      
+    </div>
+    
 </x-guest-layout>
